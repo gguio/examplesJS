@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<style>
+			h1 {
+				line-height: 1.1;
+				font-size: 40px;
+
+				background: linear-gradient(
+					to right,
+					#7953cd 20%,
+					#00affa 30%,
+					#0190cd 70%,
+					#764ada 80%
+				);
+				-webkit-background-clip: text;
+				background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-size: 500% auto;
+				animation: textShine 5s ease-in-out infinite alternate;
+			}
+
+			@keyframes textShine {
+				0% {
+					background-position: 0% 50%;
+				}
+				100% {
+					background-position: 100% 50%;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Стандартные примеры применения JavaScript на web-странице</h1>
+		<p>Переключение страниц:</p>
+		<ul>
+			<li>Кликами по стрелкам на странице</li>
+			<li>Enter - следующая страница</li>
+			<li>Стрелки на клавиатуре</li>
+		</ul>
+	</body>
+</html>

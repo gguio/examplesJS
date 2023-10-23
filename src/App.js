@@ -1,3 +1,5 @@
+import gsap from "gsap";
+
 /**
  * @callback cbFunction
  * @returns {void}
@@ -7,6 +9,7 @@
  * @typedef {object} AppType
  * @property {number} pageNumber
  * @property {number} _maxPage
+ * @property {URLSearchParams} urlParams
  */
 
 /** @type {AppType} */
@@ -15,51 +18,82 @@ export class App {
 		this.pageNumber = 1;
 		/** @protected */
 		this._maxPage = 2;
+		this.urlParams = new URLSearchParams(window.location.search);
+		console.log("constructor");
+		if (this.urlParams.has("page")) {
+			this.pageNumber = Number(this.urlParams.get("page"));
+		}
+		this.setUrlParams();
 	}
 
 	/**
-	 * @param {string} selector
-	 * @param {cbFunction} [onLoad]
-	 */
-	moveOut(selector, onLoad = null) {
-		$(selector).fadeOut("medium", onLoad);
-		$("#indicator").fadeIn("medium");
-	}
-
-	/**
-	 * @param {string} selector
-	 */
-	moveIn(selector) {
-		$("#indicator").fadeOut("medium", () => {
-			$(selector).fadeIn("medium");
-		});
-	}
-
-	/**
-	 * @param {number} [page]
+	 *
 	 * @returns {void}
 	 */
-	switchPage(page = 1) {
-		this.pageNumber = page;
-		this.moveOut("main", () => {
-			const link = `./pages/${this.pageNumber}.html`;
-			$("#include").load(link);
+	setUrlParams() {
+		if (!this.urlParams.has("page")) {
+			console.log("setParams");
+			this.urlParams.set("page", this.pageNumber.toString());
+			window.history.replaceState(
+				null,
+				null,
+				"?" + this.urlParams.toString()
+			);
+			return;
+		}
 
-			if (this.pageNumber >= this._maxPage) {
-				$(".Arrow:last-child").css("visibility", "hidden");
-			} else {
-				$(".Arrow:last-child").css("visibility", "visible");
-			}
+		if (this.urlParams.get("page") != this.pageNumber.toString()) {
+			console.log(this.pageNumber);
+			this.urlParams.set("page", this.pageNumber.toString());
+			window.history.replaceState(
+				null,
+				null,
+				"?" + this.urlParams.toString()
+			);
+		}
+	}
 
-			if (this.pageNumber == 1) {
-				$(".Arrow:first-child").css("visibility", "hidden");
-			} else {
-				$(".Arrow:first-child").css("visibility", "visible");
-			}
+	/**
+	 * @param {number} [pageOffset]
+	 * @returns {void}
+	 */
+	switchPage(pageOffset = 0) {
+		this.pageNumber += pageOffset;
+		if (this.pageNumber > this._maxPage) {
+			this.pageNumber = 1;
+		} else if (this.pageNumber < 1) {
+			this.pageNumber = this._maxPage;
+		}
+		gsap.to("#include", {
+			x: (-pageOffset / Math.abs(pageOffset)) * 200,
+			opacity: 0,
+			onComplete: () => {
+				$("#include").load(`./${this.pageNumber}.html`);
+				if (this.pageNumber == this._maxPage) {
+					$(".Arrow:last-child").css("visibility", "hidden");
+				} else {
+					$(".Arrow:last-child").css("visibility", "visible");
+				}
+
+				if (this.pageNumber == 1) {
+					$(".Arrow:first-child").css("visibility", "hidden");
+				} else {
+					$(".Arrow:first-child").css("visibility", "visible");
+				}
+
+				setTimeout(() => {
+					gsap.fromTo(
+						"#include",
+						{
+							x: (pageOffset / Math.abs(pageOffset)) * 200,
+							opacity: 0,
+						},
+						{ x: 0, opacity: 1 }
+					);
+					this.setUrlParams();
+				}, 10);
+			},
 		});
-		setTimeout(() => {
-			this.moveIn("main");
-		}, 500);
 	}
 
 	/**
@@ -70,20 +104,38 @@ export class App {
 			document.getElementById("indicator").style.display = "block";
 		} else {
 			setTimeout(() => {
-				this.switchPage();
-				this.init();
+				$("#indicator").fadeOut("medium", () => {
+					$("main").fadeIn("medium", () => {
+						this.switchPage();
+						$("#include").css("opacity", 1);
+						this.init();
+					});
+				});
 			}, 3000);
 		}
 	}
 
 	init() {
 		$(".Arrow:first-child").on("click", () => {
-			this.pageNumber -= 1;
-			this.switchPage(this.pageNumber);
+			this.switchPage(-1);
 		});
 		$(".Arrow:last-child").on("click", () => {
-			this.pageNumber += 1;
-			this.switchPage(this.pageNumber);
+			this.switchPage(1);
+		});
+		addEventListener("keydown", (e) => {
+			switch (e.key) {
+				case "Enter":
+					this.switchPage(1);
+					break;
+				case "ArrowRight":
+					this.switchPage(1);
+					break;
+				case "ArrowLeft":
+					this.switchPage(-1);
+					break;
+				default:
+					break;
+			}
 		});
 	}
 }
