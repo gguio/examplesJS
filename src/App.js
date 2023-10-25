@@ -12,6 +12,10 @@ import gsap from "gsap";
  * @property {URLSearchParams} urlParams
  */
 
+function Ex(a) {
+	return a;
+}
+
 /** @type {AppType} */
 export class App {
 	constructor() {
@@ -68,7 +72,6 @@ export class App {
 			x: (-pageOffset / Math.abs(pageOffset)) * 200,
 			opacity: 0,
 			onComplete: () => {
-				$("#include").load(`./${this.pageNumber}.html`);
 				if (this.pageNumber == this._maxPage) {
 					$(".Arrow:last-child").css("visibility", "hidden");
 				} else {
@@ -81,7 +84,7 @@ export class App {
 					$(".Arrow:first-child").css("visibility", "visible");
 				}
 
-				setTimeout(() => {
+				$("#include").load(`./${this.pageNumber}.html`, () => {
 					gsap.fromTo(
 						"#include",
 						{
@@ -91,7 +94,7 @@ export class App {
 						{ x: 0, opacity: 1 }
 					);
 					this.setUrlParams();
-				}, 10);
+				});
 			},
 		});
 	}
@@ -116,12 +119,12 @@ export class App {
 	}
 
 	init() {
-		$(".Arrow:first-child").on("click", () => {
-			this.switchPage(-1);
-		});
-		$(".Arrow:last-child").on("click", () => {
-			this.switchPage(1);
-		});
+		document
+			.querySelector(".Arrow:first-child")
+			.addEventListener("click", this.switchPage.bind(this, -1));
+		document
+			.querySelector(".Arrow:last-child")
+			.addEventListener("click", this.switchPage.bind(this, 1));
 		addEventListener("keydown", (e) => {
 			switch (e.key) {
 				case "Enter":
