@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			body {
+				height: 500vh;
+			}
+			.progress-bar {
+				background: #ff4163;
+				height: 10px;
+				width: 0%;
+				position: fixed;
+				top: 0;
+				left: 0;
+				z-index: 1;
+			}
+
+			svg {
+				position: absolute;
+				display: block;
+				left: 50%;
+				top: 30vh;
+				margin-bottom: 50vh;
+				overflow: visible;
+				transform: translateX(-50%);
+			}
+
+			path {
+				fill: none;
+				stroke: #fff;
+				stroke-width: 2px;
+			}
+
+			.circle {
+				position: absolute;
+				width: 2rem;
+				height: 2rem;
+				top: -1rem;
+				left: -1rem;
+				border-radius: 50%;
+				background: #fff;
+				transform: translate(());
+			}
+		</style>
+	</head>
+	<body>
+		<h1>
+			Элементы на странице могут двигаться в зависимости от длины страницы
+		</h1>
+		<div>
+			<svg width="132px" height="1012px" viewBox="0 0 132 1012">
+				<path
+					d="M60.0495117,1 C93.5911783,137.734375 87.6927408,220.346354 38.3541992,248.835938 C-0.809171986,271.450066 -16.9687858,227.257813 23.6823242,227.257812 C64.3334342,227.257812 83.1354492,266.859375 47.3776367,324.632812 C11.6198242,382.40625 -5.19267585,446.585938 78.3620117,467.546875 C161.916699,488.507812 130.658887,418.890625 78.3620117,442.429688 C26.0651367,465.96875 29.0651367,601.929688 65.3620117,671.742188 C101.658887,741.554688 182.268262,913.351562 56.1026386,967.34375 C-0.64161078,991.627276 -0.669238346,924.46875 48.3541992,946.632812 C81.0364908,961.408854 90.71097,982.778646 77.3776367,1010.74219"
+					class="path"
+				></path>
+			</svg>
+
+			<div class="circle"></div>
+		</div>
+	<script defer src="4.js"></script></body>
+</html>
